@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import 'flowbite';
+@plugin "daisyui";
+@custom-variant dark (&:where(.dark, .dark *));
