@@ -52,11 +52,11 @@ function App() {
           <QueryClientProvider client={client}>
             <IsLoadingStateContext>
               <Toaster></Toaster>
-              {/* <Offline>
+              <Offline>
                 <div className='p-3 rounded-2xl bg-amber-600 fixed top-1/2 start-0'>
                   Only shown offline (surprise!)
                 </div>
-              </Offline> */}
+              </Offline>
               <RouterProvider router={router}>
               </RouterProvider>
             </IsLoadingStateContext>

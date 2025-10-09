@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react'
 import Style from './AuthContextProvider.module.css'
-import { useNavigate } from 'react-router-dom';
+
 
 export const authContext = createContext();
 

@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Style from './PostDetails.module.css'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios';
 import Post from '../Post/Post';
 import { useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -39,11 +39,13 @@ const PostDetails = () => {
     </div>
   }
 
+  useEffect(() => {
+    document.title = `Post Details - ${data?.data?.post?.user?.name}`;
+  }, [data]);
+
   return (
     <section className='  md:w-2/3 lg:w-1/2 p-5 my-4 mx-auto !text-black dark:text-white'>
-       <Helmet>
-        <title>Post Details - {data?.data?.post?.user?.name}</title>
-      </Helmet>
+
       <Post post={data?.data.post} isPostDetails={true}></Post>
     </section>
   )
