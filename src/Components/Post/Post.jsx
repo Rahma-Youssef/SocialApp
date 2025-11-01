@@ -67,7 +67,6 @@ const Post = ({ post, isPostDetails }) => {
                   <div key={comment?.id || comment?._id} className='!text-gray-500 dark:!text-gray-300  font-medium mt-4 p-5 rounded-lg bg-slate-200/70 dark:bg-base-300/25 border-2 border-slate-200/20'>
                     <UserInfo
                       UserName={comment?.commentCreator?.name}
-                    
                       UserImg={post?.user?.photo}
                       createAt={comment?.createdAt}
                       commentId={comment?.id || comment?._id}
