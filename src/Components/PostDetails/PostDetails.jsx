@@ -11,7 +11,6 @@ const PostDetails = () => {
 
   function getSinglePost() {
 
-
     return axios.get(`https://linked-posts.routemisr.com/posts/${id}`,
       {
         headers: {
@@ -21,15 +20,15 @@ const PostDetails = () => {
 
   }
 
-
   const { data, isLoading } = useQuery({
     queryKey: ['post' , id],
     queryFn: getSinglePost,
      refetchOnMount: false,
  
-
-
   })
+    useEffect(() => {
+    document.title = `Post Details - ${data?.data?.post?.user?.name}`;
+  }, [data]);
 
 
 
@@ -39,12 +38,10 @@ const PostDetails = () => {
     </div>
   }
 
-  useEffect(() => {
-    document.title = `Post Details - ${data?.data?.post?.user?.name}`;
-  }, [data]);
+
 
   return (
-    <section className='  md:w-2/3 lg:w-1/2 p-5 my-4 mx-auto !text-black dark:text-white'>
+    <section className='  md:w-2/3 lg:w-1/2 p-5 my-4 mx-auto font-medium !text-gray-500 dark:!text-gray-300  bg-slate-200/70 dark:bg-base-300/25'>
 
       <Post post={data?.data.post} isPostDetails={true}></Post>
     </section>

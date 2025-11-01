@@ -22,6 +22,7 @@ const AuthContextProvider = ({ children }) => {
 
   useEffect(() => {
   const token = localStorage.getItem("token");
+  
   if (token != null) {
     setToken(token);
   }

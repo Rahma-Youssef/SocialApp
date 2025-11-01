@@ -60,9 +60,6 @@ const Login = () => {
 
   const { register,
     handleSubmit,
-    setError,
-    getValues,
-    watch,
     formState: { errors, touchedFields } } =
     useForm({
       defaultValues: {

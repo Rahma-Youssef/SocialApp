@@ -1,97 +1,85 @@
-import React, { useRef, useState } from 'react'
-import Style from './AddPost.module.css'
+import React, { useEffect, useRef, useState } from 'react'
+import Style from './UpdatePosts.module.css'
 import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-
-const AddPost = ({userName}) => {
-  const [viewImage, setViewImage] = useState(null);
+const UpdatePosts = ({ postId, handleClose , modalId }) => {
+ const [viewImage, setViewImage] = useState(null);
   const [img, setImg] = useState("");
   const postContent = useRef("");
   const postImg = useRef("");
+  const modalRef = useRef(null);
   const queryClient = useQueryClient();
 
 
-
-  function addPost() {
-    const formData = new FormData();
-
-    if (postContent.current.value != "") {
-
-      formData.append("body", postContent.current.value);
-    }
-
-    if (img != "") {
-      formData.append("image", img);
-    }
-
-    return axios.post("https://linked-posts.routemisr.com/posts", formData, {
-      headers: {
-        token: localStorage.getItem("token")
-      }
-    });
-
+  function resetForm() {
+    postContent.current.value = '';
+    setViewImage(null);
+    setImg('');
+    if (postImg.current) postImg.current.value = '';
   }
 
+  function updatePost() {
+    const formData = new FormData();
+    if (postContent.current.value.trim() !== '') {
+      formData.append('body', postContent.current.value);
+    }
+    if (img) {
+      formData.append('image', img);
+    }
 
+    return axios.put(`https://linked-posts.routemisr.com/posts/${postId}`, formData, {
+      headers: { token: localStorage.getItem("token") }
+    });
+  }
 
   function handleImgChange() {
-    const src = URL.createObjectURL(postImg.current?.files[0]);
-    setImg(postImg.current?.files[0]);
+    const file = postImg.current?.files[0];
+    if (!file) return;
+    const src = URL.createObjectURL(file);
+    setImg(file);
     setViewImage(src);
   }
 
-  function handleClose() {
-    postImg.current = "";
-    setViewImage(null);
-    setImg(" ");
-  }
-
-
   const { mutate, isPending } = useMutation({
-    mutationFn: addPost,
-
+    mutationFn: updatePost,
     onSuccess: (data) => {
-
-      postContent.current.value = " ";
-      handleClose();
-      toast.success(data.data.message);
-
+      toast.success('Post updated successfully!');
       queryClient.invalidateQueries({ queryKey: ['userPosts'] });
-      document.getElementById('my_modal_1').close()
-
-
-
+      resetForm(); 
+      modalRef.current?.close();
+      if (handleClose) handleClose();
     },
     onError: (error) => {
       console.error(error);
-      toast.error(error.response.data.error);
-    }
-  })
+      toast.error(error.response?.data?.error || 'Something went wrong');
+    },
+  });
 
+
+  useEffect(() => {
+    const modal = modalRef.current;
+    if (!modal) return;
+    modal.addEventListener('close', resetForm);
+    return () => modal.removeEventListener('close', resetForm);
+  }, []);
   return (
     <>
 
-
-
-      <div className='!bg-slate-50 dark:!bg-gray-800 rounded-xl flex items-center py-10 mx-auto'>
-        <input type="text" className="input bg-transparent  border-2 border-gray-400 rounded-3xl w-[90%] mx-auto"
-          placeholder={userName ? `What's on your mind, ${userName.split(" ")[0] } ?` : "What's on your mind?"} list="browsers" onClick={() => document.getElementById('my_modal_1').showModal()} />
-      </div>
-
-      <dialog id="my_modal_1" className="modal">
+      <dialog id={modalId} ref={modalRef} className="modal">
         <div className="modal-box bg-slate-100 dark:bg-base-300">
-          <h3 className="font-bold text-lg !text-black dark:!text-white">Add New Post</h3>
+          <h3 className="font-bold text-xl text-center !text-black dark:!text-white">Update Post</h3>
 
 
           {/* body Post */}
           <textarea placeholder="Write your thoughts here.." ref={postContent} className=" bg-slate-100 dark:!bg-gray-600 !text-black dark:!text-white textarea border-1 border-gray-300 dark:!border-gray-100   w-full mt-10 mb-4"></textarea>
 
+          {/* image Post */}
           <i className='fa fa-xmark !text-gray-700 dark:!text-white ms-auto !block py-3 cursor-pointer ' onClick={handleClose}></i>
           {viewImage ? (<div><img src={viewImage} alt="" className='w-full rounded-xl' /></div>) : (
             <div className="flex items-center justify-center w-full">
-              <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer !bg-slate-100 dark:hover:!bg-gray-700 dark:!bg-gray-600 transition-all duration-500 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+              <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer !bg-slate-100  dark:!bg-gray-600 transition-all duration-500 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
@@ -103,14 +91,12 @@ const AddPost = ({userName}) => {
               </label>
             </div>)
           }
-          {/* image Post */}
 
 
 
           <div className="modal-action">
             <form method="dialog" className='flex items-center gap-4 me-auto'>
-              {/* if there is a button in form, it will close the modal */}
-              <button className='btn bg-blue-700 border-gray-400 px-4 rounded-lg shadow-none' onClick={mutate}>{isPending ? <i className="fa fa-spinner fa-spin"></i> : "Post"}</button>
+              <button className='btn bg-blue-700 border-gray-400 px-4 rounded-lg shadow-none' onClick={mutate}>{isPending ? <i className="fa fa-spinner fa-spin"></i> : "Update"}</button>
 
               <button className="btn bg-transparent border-gray-400 !text-black dark:!text-white rounded-lg shadow-none">Close</button>
             </form>
@@ -122,4 +108,4 @@ const AddPost = ({userName}) => {
   )
 }
 
-export default AddPost
+export default UpdatePosts

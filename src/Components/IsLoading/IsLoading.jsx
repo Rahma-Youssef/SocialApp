@@ -9,8 +9,10 @@ const IsLoading = () => {
   return (
     <>
 
-      <div className="flex justify-center items-center h-screen gap-3">
-        <SquareLoader color="#1718d5"  />
+      <div className="flex justify-center items-center h-screen gap-3 dark:bg-base-300 ">
+      
+        <span className={` ${Style.loader} `}>Loading</span>
+
 
       </div>
     </>

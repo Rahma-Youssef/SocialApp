@@ -21,26 +21,22 @@ const Home = () => {
 
 
 
-
-
-
-
   const { data, error, isLoading, isError, isFetching } = useQuery({
     queryKey: ['allposts'],
     queryFn: getAllPosts,
     refetchOnMount: false,
-    // refetchInterval: 3000,
     retry: 1,
-    // retryDelay: 3000,
-
-
 
   })
 
+
+  
   useEffect(() => {
     document.title = "SocialApp";
   }, []);
 
+  console.log(data?.data?.posts[0].comments);
+  
 
 
 
@@ -58,7 +54,7 @@ const Home = () => {
           <AddPost></AddPost>
         </div>
 
-        {data?.data?.posts.map((post, index) => <Post key={index} post={post}></Post>)}
+        {data?.data?.posts.map((post, index) => <Post key={index} post={post} ></Post>)}
       </section>
 
 
