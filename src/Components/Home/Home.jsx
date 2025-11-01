@@ -34,8 +34,6 @@ const Home = () => {
   useEffect(() => {
     document.title = "SocialApp";
   }, []);
-
-  console.log(data?.data?.posts[0].comments);
   
 
 

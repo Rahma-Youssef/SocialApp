@@ -14,7 +14,7 @@ const Profile = () => {
 
 
   const { data, isLoading, error } = useUserData();
-  // console.log(data);
+
   
 
 

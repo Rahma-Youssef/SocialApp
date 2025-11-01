@@ -11,22 +11,18 @@ import CommentForm from '../CommentForm/CommentForm'
 const Post = ({ post, isPostDetails }) => {
 
 
-
-
-
-
   return (<>
     <div className='p-5  !bg-slate-50  dark:!bg-gray-800  shadow-xl shadow-gray-300 dark:shadow-white/10 rounded-xl mt-7 '>
 
       {/* header */}
       <div className="header ">
 
-        <PostHeader UserName={post?.user?.name}
+        <PostHeader
+          UserName={post?.user?.name}
           UserImg={post?.user?.photo}
           createAt={post?.createdAt}
           userPostId={post?.user?._id}
           postId={post?.id}
-
 
         />
 
@@ -49,11 +45,13 @@ const Post = ({ post, isPostDetails }) => {
       {post?.comments.length > 0 && !isPostDetails ? (<div className="comments !text-gray-500 dark:!text-gray-300  font-medium mt-4 p-5 rounded-lg bg-slate-200/70 dark:bg-base-300/25 border-2 border-slate-200/20 ">
 
 
-        <UserInfo UserName={post?.comments[0]?.commentCreator?.name}
+        <UserInfo
+          UserName={post?.comments[0]?.commentCreator?.name}
           UserImg={post?.comments[0]?.commentCreator?.photo.includes("undefined") ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8AJM9wkP__z2M-hovSAWcTb_9XJ6smy3NKw&s" : post?.comments[0]?.commentCreator?.photo}
           createAt={post?.comments[0]?.createdAt}
           commentId={post?.comments[0]?.id || post?.comments[0]?._id}
           postId={post?.id}
+          commentUserId={post?.comments[0]?.commentCreator._id}
 
         />
         <p className='mt-4'> {post?.comments[0]?.content}</p>
@@ -63,17 +61,21 @@ const Post = ({ post, isPostDetails }) => {
           {post?.comments && (
             <>
               {post?.comments.map((comment) => {
-        
+
+
                 return (
-                  <div key={comment?.id || comment?._id}>
+                  <div key={comment?.id || comment?._id} className='!text-gray-500 dark:!text-gray-300  font-medium mt-4 p-5 rounded-lg bg-slate-200/70 dark:bg-base-300/25 border-2 border-slate-200/20'>
                     <UserInfo
                       UserName={comment?.commentCreator?.name}
-                      UserImg={post?.comments[0]?.commentCreator?.photo.includes("undefined") ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8AJM9wkP__z2M-hovSAWcTb_9XJ6smy3NKw&s" : post?.comments[0]?.commentCreator?.photo}
+                    
+                      UserImg={post?.user?.photo}
                       createAt={comment?.createdAt}
                       commentId={comment?.id || comment?._id}
+                      userPostId={post?.user?._id}
                       postId={post?.id}
+                      commentUserId={comment?.commentCreator._id}
                     />
-                    <p>{comment?.content}</p>
+                    <p className='pt-2 ps-2'>{comment?.content}</p>
                   </div>
                 );
               })}

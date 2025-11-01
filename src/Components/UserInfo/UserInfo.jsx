@@ -3,17 +3,22 @@ import React, { useEffect, useRef, useState } from 'react'
 import { handleCreateAt } from '../Utils/formDate'
 import UpdateCommentModal from '../UpdateCommentModal/UpdateCommentModal'
 import DeleteComment from '../DeleteComment/DeleteComment'
+import { jwtDecode } from 'jwt-decode'
 
-const UserInfo = ({ UserName, UserImg, createAt, commentId ,postId}) => {
+const UserInfo = ({ UserName, UserImg, createAt, commentId, postId, userPostId, commentUserId }) => {
   const dropdownRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const token = localStorage.getItem("token");
+  const { user: loggedUserId } = jwtDecode(token);
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       const modal = document.querySelector('.update-comment-modal')
 
-  
+
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
@@ -35,7 +40,7 @@ const UserInfo = ({ UserName, UserImg, createAt, commentId ,postId}) => {
       <div className='flex gap-3'>
         <div className="avatar">
           <div className="w-9 rounded-full">
-            <img src={UserImg} alt="user" />
+            <img src={commentUserId === loggedUserId ? UserImg : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8AJM9wkP__z2M-hovSAWcTb_9XJ6smy3NKw&s"} alt="user" />
           </div>
         </div>
 
@@ -46,26 +51,35 @@ const UserInfo = ({ UserName, UserImg, createAt, commentId ,postId}) => {
       </div>
 
       <div ref={dropdownRef} className="relative">
-        <button
-          onClick={handleToggle}
-          className="btn bg-transparent shadow-none text-xl outline-0 border-0 m-1 !text-gray-800 dark:!text-white"
-        >
-          <i className="fa-solid fa-ellipsis"></i>
-        </button>
+        {(commentUserId === loggedUserId || userPostId === loggedUserId) && (
+          <button
+            onClick={handleToggle}
+            className="btn bg-transparent shadow-none text-xl outline-0 border-0 m-1 !text-gray-800 dark:!text-white"
+          >
+            <i className="fa-solid fa-ellipsis"></i>
+          </button>
+        )}
+
 
         {isOpen && (
           <ul className="absolute right-0 menu rounded-box z-10 w-52 p-2 shadow-sm shadow-gray-500 !bg-white dark:!bg-gray-800">
-            <li>
-              <button onClick={handleCloseDropdown}>
-                <DeleteComment commentId={commentId}  postId={postId}/>
-              </button>
-            </li>
-            <li>
+    
+            {(commentUserId === loggedUserId || userPostId === loggedUserId) && (
               <li>
-                <button onClick={() => setIsModalOpen(true)} className='p-0'>Update</button>
+                <button onClick={handleCloseDropdown}>
+                  <DeleteComment commentId={commentId} postId={postId} />
+                </button>
               </li>
+            )}
 
-            </li>
+ 
+            {commentUserId === loggedUserId && (
+              <li>
+                <button onClick={() => setIsModalOpen(true)} >
+                  Update
+                </button>
+              </li>
+            )}
           </ul>
         )}
         <UpdateCommentModal

@@ -12,7 +12,6 @@ const PostDetails = lazy(() => import("./Components/PostDetails/PostDetails"));
 import IsLoadingStateContext from './Components/IsLoadingStateContext/IsLoadingStateContext'
 import AuthContextProvider from './Components/AuthContextProvider/AuthContextProvider'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
-import { Offline, Online } from 'react-detect-offline'
 import IsLoading from './Components/IsLoading/IsLoading'
 
 
@@ -46,17 +45,10 @@ function App() {
   return (
     <>
       <Suspense fallback={<IsLoading></IsLoading>}>
-
-
         <AuthContextProvider>
           <QueryClientProvider client={client}>
             <IsLoadingStateContext>
               <Toaster></Toaster>
-              <Offline>
-                <div className='p-3 rounded-2xl bg-amber-600 fixed top-1/2 start-0'>
-                  Only shown offline (surprise!)
-                </div>
-              </Offline>
               <RouterProvider router={router}>
               </RouterProvider>
             </IsLoadingStateContext>

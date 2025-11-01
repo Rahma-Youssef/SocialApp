@@ -35,7 +35,7 @@ const Login = () => {
 
     try {
       const { data } = await axios.post("https://linked-posts.routemisr.com/users/signin", values);
-      console.log(data);
+
 
       toast.success(data.message, "Register Successfully");
 
